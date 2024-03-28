@@ -1,5 +1,7 @@
 **Weather Data Visualization Dashboard
-**
+
+
+
 **Introduction**
 This repository details the creation of an interactive visualization dashboard designed for in-depth analysis of weather data. The dashboard aims to facilitate exploration of various weather variables and identify significant patterns and trends over time and across different regions. The analysis covers a wide range of weather-related metrics, providing insights into how weather conditions influence consumer behavior and market trends.
 
