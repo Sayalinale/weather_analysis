@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+
+<body>
+    <div class="header_section">
+        <header>
+            <h1 style="font-size: 36px;">Weather Analysis</h1>
+        </header>
+    </div>
+    <div class="section_first">
+        <div class="row">
+            <div class="container_first">
+                <div class="column_1">
+                    <section id="filter-section">
+                        <label for="year-dropdown">Select Year:</label>
+                        <select id="year-dropdown" onchange="updateChart()">
+
+                        </select>
+                    </section>
+                    <section id="chart-section">
+                        <canvas id="temperature-chart"></canvas>
+                    </section>
+                    <div class="section_heading">
+                        <p>Overall Minimum and Maximum Temperature</p>
+                    </div>
+                </div>
+                <div class="column_2">
+                    <section id="pie-chart-section">
+                        <canvas id="af-days-pie-chart"></canvas>
+                    </section>
+                    <div class="section_heading">
+                        <p>Distribution of temperatures for Air Frost Days</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="second_section">
+        <div class="container_second">
+            <div class="column_map1">
+                <div id="map"></div>
+                <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <div class="third_section">
+        <div class="container_third">
+            <div class="chart-container">
+                <div class="chart" id="region-chart"></div>
+                <div class="chart" id="yearly-chart"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+</body>
+
+</html>
+
+
+<script>
+    // Fetch the data from the provided URL
+    fetch('https://raw.githubusercontent.com/Sayalinale/weather_analysis/main/SET09123_IDV_CW_dataset.csv')
+        .then(response => response.text())
+        .then(data => {
+            // Parse the CSV data using D3.js
+            const parsedData = d3.csvParse(data);
+
+            // Extract unique regions
+            const regions = Array.from(new Set(parsedData.map(d => d.region)));
+
+            // Calculate average max temperature for each region
+            const avgMaxTempByRegion = regions.map(region => {
+                const regionData = parsedData.filter(d => d.region === region);
+                const avgMaxTemp = d3.mean(regionData, d => +d.max_temp);
+                return { region, avgMaxTemp };
+            });
+
+            // Create the region chart
+            const regionChart = document.getElementById('region-chart');
+            const regionChartLayout = {
+                title: 'Average Max Temperature by Region',
+                xaxis: { title: 'Region' },
+                yaxis: { title: 'Average Max Temperature' }
+            };
+            const regionChartData = [{
+                x: avgMaxTempByRegion.map(d => d.region),
+                y: avgMaxTempByRegion.map(d => d.avgMaxTemp),
+                type: 'line'
+            }];
+            Plotly.newPlot(regionChart, regionChartData, regionChartLayout);
+
+            // Add click event to the region chart
+            regionChart.on('plotly_click', event => {
+                const regionName = event.points[0].x;
+                const yearlyData = parsedData.filter(d => d.region === regionName);
+                const years = Array.from(new Set(yearlyData.map(d => d.year)));
+                const avgMaxTempByYear = years.map(year => {
+                    const yearData = yearlyData.filter(d => d.year === year);
+                    const avgMaxTemp = d3.mean(yearData, d => +d.max_temp);
+                    return { year, avgMaxTemp };
+                });
+
+                // Create the yearly chart
+                const yearlyChart = document.getElementById('yearly-chart');
+                const yearlyChartLayout = {
+                    title: `Average Max Temperature for ${regionName} by Year`,
+                    xaxis: { title: 'Year' },
+                    yaxis: { title: 'Average Max Temperature' }
+                };
+                const yearlyChartData = [{
+                    x: avgMaxTempByYear.map(d => d.year),
+                    y: avgMaxTempByYear.map(d => d.avgMaxTemp),
+                    type: 'line'
+                }];
+                Plotly.newPlot(yearlyChart, yearlyChartData, yearlyChartLayout);
+            });
+        });
+</script>

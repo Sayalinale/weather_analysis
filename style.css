@@ -1,0 +1,68 @@
+body {
+    margin: auto;
+
+}
+
+.header_section {
+    padding: 6px;
+    text-align: center;
+    background: #1f5075;
+    color: white;
+    text-shadow: 0 0 #000000a8;
+}
+
+.container_first {
+    display: flex;
+}
+
+
+.column_1,
+.column_2 {
+    width: 50%;
+
+}
+
+section#pie-chart-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+canvas#af-days-pie-chart {
+    height: 440px !important;
+}
+
+.section_heading p {
+    text-align: center;
+    font-size: 22px;
+}
+
+select#year-dropdown {
+    font-size: 15px;
+    padding: 5px;
+}
+
+section#filter-section {
+    font-size: 20px;
+    padding: 20px;
+}
+
+#map {
+    height: 68vh;
+}
+
+div#map {
+   border: 1px solid #0000;
+} 
+
+.chart-container {
+    width: 80%;
+    margin: auto;
+    display: flex;
+  }
+
+  .chart {
+    flex: 1;
+    margin-right: 10px;
+  }
